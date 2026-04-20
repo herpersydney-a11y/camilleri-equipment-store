@@ -26,128 +26,108 @@
       min-height: 100vh;
     }
 
-    /* ── screens ── */
     .screen { display: none; min-height: 100vh; }
     .screen.active { display: block; }
 
+    /* ── loading overlay ── */
+    #loading {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 14px;
+    }
+    #loading.show { display: flex; }
+    .spinner {
+      width: 44px; height: 44px;
+      border: 4px solid rgba(255,255,255,.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite;
+    }
+    #loading p { color: #fff; font-size: .9rem; font-weight: 600; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
     /* ── header ── */
     .hdr {
-      background: var(--orange);
-      color: #fff;
+      background: var(--orange); color: #fff;
       padding: 16px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
+      display: flex; align-items: center; justify-content: space-between;
     }
     .hdr h1  { font-size: 1.05rem; font-weight: 700; }
-    .hdr sub { font-size: 0.72rem; opacity: .85; display: block; margin-top: 2px; }
+    .hdr sub { font-size: .72rem; opacity: .85; display: block; margin-top: 2px; }
     .hdr-back {
-      background: rgba(255,255,255,.2);
-      border: none; color: #fff;
-      border-radius: 8px;
-      padding: 6px 14px;
-      cursor: pointer;
-      font-size: 0.8rem;
+      background: rgba(255,255,255,.2); border: none; color: #fff;
+      border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: .8rem;
     }
 
-    /* ── layout ── */
     .content { padding: 20px; max-width: 480px; margin: 0 auto; }
 
     /* ── card ── */
     .card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 20px;
-      box-shadow: 0 1px 4px rgba(0,0,0,.08);
-      margin-bottom: 16px;
+      background: var(--card); border-radius: 12px; padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08); margin-bottom: 16px;
     }
-    .card-title {
-      font-size: .95rem;
-      font-weight: 700;
-      margin-bottom: 14px;
-    }
+    .card-title { font-size: .95rem; font-weight: 700; margin-bottom: 14px; }
 
     /* ── form ── */
     .field { margin-bottom: 16px; }
     .field label {
-      display: block;
-      font-size: .75rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .5px;
-      margin-bottom: 6px;
+      display: block; font-size: .75rem; font-weight: 600;
+      color: var(--muted); text-transform: uppercase;
+      letter-spacing: .5px; margin-bottom: 6px;
     }
-    .field input {
-      width: 100%;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: 1rem;
-      outline: none;
-      transition: border-color .15s;
+    .field input, .field textarea {
+      width: 100%; border: 1.5px solid var(--border); border-radius: 8px;
+      padding: 12px 14px; font-size: 1rem; outline: none;
+      transition: border-color .15s; font-family: inherit;
     }
-    .field input:focus { border-color: var(--orange); }
+    .field input:focus, .field textarea:focus { border-color: var(--orange); }
 
     /* ── buttons ── */
     .btn {
-      display: block; width: 100%;
-      padding: 14px; border: none;
-      border-radius: 10px;
-      font-size: .95rem; font-weight: 700;
+      display: block; width: 100%; padding: 14px; border: none;
+      border-radius: 10px; font-size: .95rem; font-weight: 700;
       cursor: pointer; transition: opacity .15s;
     }
     .btn:disabled { opacity: .4; cursor: not-allowed; }
     .btn-primary  { background: var(--orange); color: #fff; }
     .btn-primary:not(:disabled):hover  { background: var(--orange2); }
-    .btn-secondary {
-      background: #fff; color: var(--text);
-      border: 1.5px solid var(--border);
-    }
-    .btn-danger { background: var(--red); color: #fff; }
+    .btn-secondary { background: #fff; color: var(--text); border: 1.5px solid var(--border); }
+    .btn-danger  { background: var(--red); color: #fff; }
     .btn-sm { width: auto; display: inline-block; padding: 7px 14px; font-size: .8rem; }
 
-    /* ── error ── */
     .err { color: var(--red); font-size: .82rem; margin-bottom: 10px; display: none; }
 
     /* ── equipment rows ── */
     .eq-row {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      padding: 13px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 13px 0; border-bottom: 1px solid var(--border);
     }
     .eq-row:last-child { border-bottom: none; }
     .eq-name  { font-weight: 600; font-size: .93rem; }
     .eq-stock { font-size: .72rem; color: var(--muted); margin-top: 2px; }
-    .eq-stock.low  { color: var(--red);   font-weight: 600; }
+    .eq-stock.low  { color: var(--red); font-weight: 600; }
     .eq-stock.zero { color: #9ca3af; }
 
     .qty-ctrl { display: flex; align-items: center; gap: 10px; }
     .qty-btn {
-      width: 32px; height: 32px;
-      border: 1.5px solid var(--border);
-      border-radius: 8px;
-      background: #fff;
-      font-size: 1.1rem;
-      cursor: pointer;
+      width: 32px; height: 32px; border: 1.5px solid var(--border); border-radius: 8px;
+      background: #fff; font-size: 1.1rem; cursor: pointer;
       display: flex; align-items: center; justify-content: center;
       transition: border-color .1s, color .1s;
     }
-    .qty-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .qty-btn:hover:not(:disabled) { border-color: var(--orange); color: var(--orange); }
     .qty-btn:disabled { opacity: .3; cursor: not-allowed; }
     .qty-num { font-size: 1rem; font-weight: 700; min-width: 22px; text-align: center; }
 
-    /* ── summary box ── */
     .summary-box {
-      background: #fff7ed;
-      border: 1px solid #fed7aa;
-      border-radius: 8px;
-      padding: 12px 14px;
-      font-size: .85rem;
-      color: #9a3412;
-      margin-bottom: 14px;
-      line-height: 1.7;
+      background: #fff7ed; border: 1px solid #fed7aa; border-radius: 8px;
+      padding: 12px 14px; font-size: .85rem; color: #9a3412;
+      margin-bottom: 14px; line-height: 1.7;
     }
 
     /* ── success ── */
@@ -159,10 +139,8 @@
     /* ── admin tabs ── */
     .tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
     .tab {
-      padding: 8px 16px; border-radius: 8px;
-      font-size: .82rem; font-weight: 600;
-      cursor: pointer; white-space: nowrap;
-      border: 1.5px solid var(--border);
+      padding: 8px 16px; border-radius: 8px; font-size: .82rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap; border: 1.5px solid var(--border);
       background: #fff; color: var(--muted);
     }
     .tab.active { background: var(--orange); color: #fff; border-color: var(--orange); }
@@ -176,53 +154,56 @@
 
     /* ── stock admin row ── */
     .stock-row {
-      display: flex; align-items: center;
-      justify-content: space-between;
-      padding: 11px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 11px 0; border-bottom: 1px solid var(--border);
     }
     .stock-row:last-child { border-bottom: none; }
     .stock-input {
-      width: 68px; border: 1.5px solid var(--border);
-      border-radius: 6px; padding: 6px 8px;
-      font-size: .9rem; text-align: center;
-      outline: none;
+      width: 68px; border: 1.5px solid var(--border); border-radius: 6px;
+      padding: 6px 8px; font-size: .9rem; text-align: center; outline: none;
     }
     .stock-input:focus { border-color: var(--orange); }
 
-    /* ── QR wrapper ── */
+    /* ── QR ── */
     .qr-box {
-      display: flex; flex-direction: column;
-      align-items: center;
-      padding: 20px;
-      background: #fff;
-      border: 1.5px solid var(--border);
-      border-radius: 12px;
-      margin-top: 14px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 20px; background: #fff; border: 1.5px solid var(--border);
+      border-radius: 12px; margin-top: 14px;
     }
     .qr-box p { font-size: .75rem; color: var(--muted); text-align: center; word-break: break-all; margin-top: 10px; }
 
-    /* ── info callout ── */
     .info {
-      background: #eff6ff; border: 1px solid #bfdbfe;
-      border-radius: 8px; padding: 11px 14px;
-      font-size: .78rem; color: #1d4ed8; line-height: 1.55;
+      background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px;
+      padding: 11px 14px; font-size: .78rem; color: #1d4ed8; line-height: 1.55;
       margin-bottom: 14px;
     }
+    .info.green { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+    .info.yellow { background: #fefce8; border-color: #fde68a; color: #b45309; }
 
-    /* ── FAB (gear button) ── */
     .fab {
-      position: fixed; bottom: 22px; right: 22px;
-      width: 46px; height: 46px;
-      background: var(--text); color: #fff;
-      border: none; border-radius: 50%;
-      font-size: 1.1rem; cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,.22);
-      z-index: 200;
+      position: fixed; bottom: 22px; right: 22px; width: 46px; height: 46px;
+      background: var(--text); color: #fff; border: none; border-radius: 50%;
+      font-size: 1.1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(0,0,0,.22); z-index: 200;
     }
 
-    /* ── divider ── */
-    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+    /* ── setup step list ── */
+    .steps { counter-reset: step; }
+    .step {
+      counter-increment: step; display: flex; gap: 12px;
+      align-items: flex-start; padding: 10px 0;
+      border-bottom: 1px solid var(--border); font-size: .88rem;
+    }
+    .step:last-child { border-bottom: none; }
+    .step::before {
+      content: counter(step); min-width: 24px; height: 24px;
+      background: var(--orange); color: #fff; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .75rem; font-weight: 700; flex-shrink: 0; margin-top: 1px;
+    }
+    code {
+      background: #f1f5f9; border-radius: 4px; padding: 2px 6px;
+      font-size: .82rem; font-family: monospace;
+    }
 
     @media print {
       .fab, .btn, .hdr, .tabs { display: none !important; }
@@ -231,15 +212,58 @@
 </head>
 <body>
 
+<!-- ── Loading overlay ── -->
+<div id="loading">
+  <div class="spinner"></div>
+  <p id="loading-msg">Loading…</p>
+</div>
+
+
 <!-- ════════════════════════════════════
-     SCREEN 1 — CHECK-IN
+     SCREEN: SETUP (first run)
      ════════════════════════════════════ -->
-<div id="s-checkin" class="screen active">
+<div id="s-setup" class="screen">
   <div class="hdr">
-    <div>
-      <h1>Camilleri Civil</h1>
-      <sub>Equipment Store</sub>
+    <div><h1>Camilleri Civil</h1><sub>Equipment Store — Setup</sub></div>
+    <span style="font-size:1.5rem">⚙️</span>
+  </div>
+  <div class="content" style="padding-top:24px">
+
+    <div class="info">
+      🔧 One-time setup required. Do this on your laptop, then share the page URL with workers.
     </div>
+
+    <div class="card">
+      <div class="card-title">Step 1 — Set up Google Sheet</div>
+      <div class="steps">
+        <div class="step">Go to <strong>sheets.google.com</strong> → create a new blank spreadsheet. Name it <em>Camilleri Civil Equipment</em>.</div>
+        <div class="step">Click <strong>Extensions → Apps Script</strong>.</div>
+        <div class="step">Delete all existing code. Paste the contents of <code>apps-script-code.js</code> (provided alongside this file).</div>
+        <div class="step">Press <strong>Ctrl+S</strong> to save. Then in the function dropdown, select <code>initSheets</code> and click ▶ Run. Approve permissions when asked. This creates the Equipment and Log sheets with default data.</div>
+        <div class="step">Click <strong>Deploy → New deployment</strong>. Set type = <em>Web app</em>, Execute as = <em>Me</em>, Who has access = <em>Anyone</em>. Click Deploy. Copy the Web App URL.</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Step 2 — Connect this app</div>
+      <div class="field">
+        <label>Apps Script Web App URL</label>
+        <input id="setup-url" type="url" placeholder="https://script.google.com/macros/s/…/exec">
+      </div>
+      <div id="setup-err" class="err"></div>
+      <button class="btn btn-primary" onclick="saveSetup()">Connect & Continue →</button>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN: CHECK-IN
+     ════════════════════════════════════ -->
+<div id="s-checkin" class="screen">
+  <div class="hdr">
+    <div><h1>Camilleri Civil</h1><sub>Equipment Store</sub></div>
     <span style="font-size:1.6rem">🏗️</span>
   </div>
   <div class="content" style="padding-top:28px">
@@ -262,7 +286,7 @@
     </div>
 
     <div class="info">
-      📋 Your name and mobile number are recorded with each checkout for site accountability.
+      📋 Your name and mobile number are recorded with each checkout.
     </div>
   </div>
   <button class="fab" onclick="openAdminLogin()" title="Admin">⚙️</button>
@@ -270,20 +294,17 @@
 
 
 <!-- ════════════════════════════════════
-     SCREEN 2 — EQUIPMENT SELECTION
+     SCREEN: EQUIPMENT SELECTION
      ════════════════════════════════════ -->
 <div id="s-equip" class="screen">
   <div class="hdr">
-    <div>
-      <h1>Select Equipment</h1>
-      <sub id="eq-user-label"></sub>
-    </div>
+    <div><h1>Select Equipment</h1><sub id="eq-user-label"></sub></div>
     <button class="hdr-back" onclick="go('s-checkin')">← Back</button>
   </div>
   <div class="content" style="padding-top:20px">
     <div class="card">
       <div class="card-title">Storage Items</div>
-      <div id="eq-list"></div>
+      <div id="eq-list"><p style="color:var(--muted);font-size:.85rem">Loading…</p></div>
     </div>
 
     <div id="eq-summary" class="summary-box" style="display:none"></div>
@@ -299,12 +320,10 @@
 
 
 <!-- ════════════════════════════════════
-     SCREEN 3 — SUCCESS
+     SCREEN: SUCCESS
      ════════════════════════════════════ -->
 <div id="s-success" class="screen">
-  <div class="hdr">
-    <div><h1>Checked Out</h1><sub>Camilleri Civil Equipment</sub></div>
-  </div>
+  <div class="hdr"><div><h1>Checked Out</h1><sub>Camilleri Civil Equipment</sub></div></div>
   <div class="content">
     <div class="success-wrap">
       <div class="success-icon">✅</div>
@@ -318,7 +337,7 @@
 
 
 <!-- ════════════════════════════════════
-     SCREEN 4 — ADMIN LOGIN
+     SCREEN: ADMIN LOGIN
      ════════════════════════════════════ -->
 <div id="s-admin-login" class="screen">
   <div class="hdr">
@@ -344,7 +363,7 @@
 
 
 <!-- ════════════════════════════════════
-     SCREEN 5 — ADMIN PANEL
+     SCREEN: ADMIN PANEL
      ════════════════════════════════════ -->
 <div id="s-admin" class="screen">
   <div class="hdr">
@@ -354,20 +373,19 @@
   <div class="content" style="padding-top:20px">
 
     <div class="tabs">
-      <div class="tab active" data-tab="t-stock"   onclick="switchTab(this)">📦 Stock</div>
-      <div class="tab"        data-tab="t-log"     onclick="switchTab(this)">📋 Log</div>
-      <div class="tab"        data-tab="t-qr"      onclick="switchTab(this)">📱 QR Code</div>
-      <div class="tab"        data-tab="t-pw"      onclick="switchTab(this)">🔑 Password</div>
+      <div class="tab active" data-tab="t-stock" onclick="switchTab(this)">📦 Stock</div>
+      <div class="tab"        data-tab="t-log"   onclick="switchTab(this)">📋 Log</div>
+      <div class="tab"        data-tab="t-qr"    onclick="switchTab(this)">📱 QR Code</div>
+      <div class="tab"        data-tab="t-cfg"   onclick="switchTab(this)">🔑 Settings</div>
     </div>
 
-    <!-- ── Stock tab ── -->
+    <!-- Stock tab -->
     <div id="t-stock">
       <div class="card">
         <div class="card-title">Current Stock</div>
-        <div id="admin-stock"></div>
+        <div id="admin-stock"><p style="color:var(--muted);font-size:.85rem">Loading…</p></div>
         <button class="btn btn-primary" style="margin-top:16px" onclick="saveStock()">Save Stock Levels</button>
       </div>
-
       <div class="card">
         <div class="card-title">Add New Item</div>
         <div class="field">
@@ -382,30 +400,32 @@
       </div>
     </div>
 
-    <!-- ── Log tab ── -->
+    <!-- Log tab -->
     <div id="t-log" style="display:none">
+      <div class="info green" style="margin-bottom:12px">
+        📊 Full data is also visible in your <strong>Google Sheet → Log tab</strong> in real time.
+      </div>
       <div class="card">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
           <div class="card-title" style="margin-bottom:0">Checkout Log</div>
-          <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
+          <button class="btn btn-secondary btn-sm" onclick="loadLog()">↻ Refresh</button>
         </div>
-        <div id="admin-log"></div>
+        <div id="admin-log"><p style="color:var(--muted);font-size:.85rem">Loading…</p></div>
       </div>
-      <button class="btn btn-danger" onclick="clearLog()">Clear All Log Entries</button>
     </div>
 
-    <!-- ── QR tab ── -->
+    <!-- QR tab -->
     <div id="t-qr" style="display:none">
       <div class="card">
         <div class="card-title">Generate QR Code</div>
         <div class="info">
-          💡 Host this HTML file on <strong>GitHub Pages</strong>, <strong>Netlify</strong>, or any web server.
-          Paste the URL below to generate a printable QR code. Workers scan it to open this check-in
-          page directly on their phone.
+          💡 Host this HTML file on <strong>GitHub Pages</strong> or <strong>Netlify</strong>.
+          Paste the URL below → print the QR → stick it on the storage room door.
+          Workers scan it on their phone to open the check-in page.
         </div>
         <div class="field">
           <label>Hosted Page URL</label>
-          <input id="qr-url" type="url" placeholder="https://yoursite.com/equipment-store.html">
+          <input id="qr-url" type="url" placeholder="https://yourname.github.io/equipment-store/">
         </div>
         <button class="btn btn-primary" onclick="genQR()">Generate QR Code</button>
 
@@ -418,60 +438,90 @@
       </div>
     </div>
 
-    <!-- ── Password tab ── -->
-    <div id="t-pw" style="display:none">
+    <!-- Settings tab -->
+    <div id="t-cfg" style="display:none">
+
       <div class="card">
         <div class="card-title">Change Admin Password</div>
-        <div class="field">
-          <label>Current Password</label>
+        <div class="field"><label>Current Password</label>
           <input id="pw-current" type="password" placeholder="Current password">
         </div>
-        <div class="field">
-          <label>New Password</label>
-          <input id="pw-new" type="password" placeholder="New password">
+        <div class="field"><label>New Password</label>
+          <input id="pw-new" type="password" placeholder="New password (min 6 chars)">
         </div>
-        <div class="field">
-          <label>Confirm New Password</label>
+        <div class="field"><label>Confirm New Password</label>
           <input id="pw-confirm" type="password" placeholder="Confirm new password">
         </div>
         <div id="pw-err" class="err"></div>
         <button class="btn btn-primary" onclick="changePW()">Update Password</button>
       </div>
+
+      <div class="card">
+        <div class="card-title">Apps Script URL</div>
+        <div class="field"><label>Current URL</label>
+          <input id="cfg-url" type="url">
+        </div>
+        <button class="btn btn-primary" onclick="updateScriptURL()">Save URL</button>
+        <button class="btn btn-secondary" style="margin-top:8px" onclick="go('s-setup')">Re-run Setup Wizard</button>
+      </div>
+
     </div>
 
-  </div><!-- /content -->
-</div><!-- /s-admin -->
+  </div>
+</div>
 
 
 <script>
 // ──────────────────────────────────────────────────────────
-// STORAGE HELPERS
+// CONFIG
 // ──────────────────────────────────────────────────────────
 const LS = {
   get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
-  set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
 };
 
-const DEFAULT_ITEMS = [
-  { id:1, name:'Shovels',      total:10,  avail:10  },
-  { id:2, name:'Hammers',      total:10,  avail:10  },
-  { id:3, name:'Grease',       total:20,  avail:20  },
-  { id:4, name:'Paint',        total:20,  avail:20  },
-  { id:5, name:'Cement Bags',  total:50,  avail:50  },
-];
-
-const getItems  = ()    => LS.get('cc_items',  DEFAULT_ITEMS);
-const setItems  = (v)   => LS.set('cc_items',  v);
-const getLog    = ()    => LS.get('cc_log',    []);
-const setLog    = (v)   => LS.set('cc_log',    v);
-const getAdminPW = ()   => LS.get('cc_pw',     'camilleri2024');
-const setAdminPW = (v)  => LS.set('cc_pw',     v);
+const getScriptURL  = ()  => LS.get('cc_script_url', '');
+const setScriptURL  = (v) => LS.set('cc_script_url', v);
+const getAdminPW    = ()  => LS.get('cc_pw', 'camilleri2024');
+const setAdminPW    = (v) => LS.set('cc_pw', v);
 
 // ──────────────────────────────────────────────────────────
 // STATE
 // ──────────────────────────────────────────────────────────
-let currentUser = null;  // { name, phone }
-let qtys = {};           // { itemId: qty }
+let currentUser  = null;   // { name, phone }
+let qtys         = {};     // { itemId: qty }
+let cachedItems  = [];     // last fetched equipment list
+
+// ──────────────────────────────────────────────────────────
+// LOADING OVERLAY
+// ──────────────────────────────────────────────────────────
+function showLoading(msg) {
+  document.getElementById('loading-msg').textContent = msg || 'Loading…';
+  document.getElementById('loading').classList.add('show');
+}
+function hideLoading() {
+  document.getElementById('loading').classList.remove('show');
+}
+
+// ──────────────────────────────────────────────────────────
+// API
+// ──────────────────────────────────────────────────────────
+async function apiGet(action) {
+  const url = getScriptURL();
+  if (!url) throw new Error('Script URL not configured');
+  const res = await fetch(`${url}?action=${action}`, { redirect: 'follow' });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+async function apiPost(payload) {
+  const url = getScriptURL();
+  if (!url) throw new Error('Script URL not configured');
+  // Note: no Content-Type header = "simple" CORS request = no preflight needed
+  const res = await fetch(url, { method: 'POST', body: JSON.stringify(payload), redirect: 'follow' });
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
 
 // ──────────────────────────────────────────────────────────
 // SCREEN ROUTING
@@ -483,6 +533,32 @@ function go(id) {
 }
 
 // ──────────────────────────────────────────────────────────
+// SETUP
+// ──────────────────────────────────────────────────────────
+async function saveSetup() {
+  const url = document.getElementById('setup-url').value.trim();
+  const err = document.getElementById('setup-err');
+
+  if (!url || !url.startsWith('https://')) {
+    err.textContent = 'Please enter a valid https:// URL.';
+    err.style.display = 'block'; return;
+  }
+
+  showLoading('Testing connection…');
+  try {
+    const data = await fetch(`${url}?action=getEquipment`, { redirect: 'follow' }).then(r => r.json());
+    if (data.error) throw new Error(data.error);
+    setScriptURL(url);
+    hideLoading();
+    go('s-checkin');
+  } catch (e) {
+    hideLoading();
+    err.textContent = 'Connection failed: ' + e.message + '. Check the URL and try again.';
+    err.style.display = 'block';
+  }
+}
+
+// ──────────────────────────────────────────────────────────
 // CHECK-IN
 // ──────────────────────────────────────────────────────────
 function doCheckin() {
@@ -490,42 +566,57 @@ function doCheckin() {
   const phone = document.getElementById('ci-phone').value.trim();
   const err   = document.getElementById('ci-err');
 
-  if (!name)            { showErr(err, 'Please enter your full name.');           return; }
-  if (phone.length < 8) { showErr(err, 'Please enter a valid mobile number.');    return; }
+  if (!name)            { showErr(err, 'Please enter your full name.');        return; }
+  if (phone.length < 8) { showErr(err, 'Please enter a valid mobile number.'); return; }
 
   err.style.display = 'none';
   currentUser = { name, phone };
   qtys = {};
 
   document.getElementById('eq-user-label').textContent = `${name}  ·  ${phone}`;
-  renderEquipList();
+  loadEquipList();
   go('s-equip');
 }
 
-function showErr(el, msg) {
-  el.textContent = msg;
-  el.style.display = 'block';
-}
+function showErr(el, msg) { el.textContent = msg; el.style.display = 'block'; }
 
 // ──────────────────────────────────────────────────────────
 // EQUIPMENT LIST
 // ──────────────────────────────────────────────────────────
+async function loadEquipList() {
+  showLoading('Loading equipment…');
+  try {
+    const data = await apiGet('getEquipment');
+    cachedItems = data.items || [];
+    hideLoading();
+    renderEquipList();
+  } catch (e) {
+    hideLoading();
+    document.getElementById('eq-list').innerHTML =
+      `<p style="color:var(--red);font-size:.85rem">⚠️ Could not load equipment: ${e.message}</p>`;
+  }
+}
+
 function renderEquipList() {
-  const items = getItems();
-  document.getElementById('eq-list').innerHTML = items.map(item => {
+  const container = document.getElementById('eq-list');
+
+  if (!cachedItems.length) {
+    container.innerHTML = '<p style="color:var(--muted);font-size:.85rem;text-align:center;padding:20px 0">No equipment in database.</p>';
+    return;
+  }
+
+  container.innerHTML = cachedItems.map(item => {
     const q     = qtys[item.id] || 0;
-    const empty = item.avail === 0;
-    const low   = item.avail > 0 && item.avail <= 3;
-    const stockClass = empty ? 'zero' : (low ? 'low' : '');
-    const stockLabel = empty
-      ? 'Out of stock'
-      : (low ? `⚠️ Only ${item.avail} left` : `${item.avail} available`);
+    const empty = item.avail <= 0;
+    const low   = !empty && item.avail <= 3;
+    const stockCls   = empty ? 'zero' : (low ? 'low' : '');
+    const stockLabel = empty ? 'Out of stock' : (low ? `⚠️ Only ${item.avail} left` : `${item.avail} available`);
 
     return `
       <div class="eq-row">
         <div>
           <div class="eq-name">${item.name}</div>
-          <div class="eq-stock ${stockClass}">${stockLabel}</div>
+          <div class="eq-stock ${stockCls}">${stockLabel}</div>
         </div>
         <div class="qty-ctrl">
           <button class="qty-btn" onclick="adj(${item.id},-1)" ${q===0?'disabled':''}>−</button>
@@ -539,22 +630,21 @@ function renderEquipList() {
 }
 
 function adj(id, delta) {
-  const items = getItems();
-  const item  = items.find(i => i.id === id);
-  const cur   = qtys[id] || 0;
-  const next  = Math.min(item.avail, Math.max(0, cur + delta));
+  const item = cachedItems.find(i => i.id === id);
+  if (!item) return;
+  const cur  = qtys[id] || 0;
+  const next = Math.min(item.avail, Math.max(0, cur + delta));
 
   if (next === 0) delete qtys[id];
   else qtys[id] = next;
 
   document.getElementById(`qn-${id}`).textContent = next;
   refreshCheckoutState();
-  renderEquipList(); // re-render to update disabled states
+  renderEquipList();
 }
 
 function refreshCheckoutState() {
-  const items   = getItems();
-  const entries = Object.entries(qtys).filter(([,q]) => q > 0);
+  const entries  = Object.entries(qtys).filter(([,q]) => q > 0);
   const hasItems = entries.length > 0;
 
   document.getElementById('eq-confirm-btn').disabled = !hasItems;
@@ -562,8 +652,8 @@ function refreshCheckoutState() {
   const sumEl = document.getElementById('eq-summary');
   if (hasItems) {
     const lines = entries.map(([id, q]) => {
-      const item = items.find(i => i.id === parseInt(id));
-      return `${q} × ${item.name}`;
+      const item = cachedItems.find(i => i.id === parseInt(id));
+      return `${q} × ${item ? item.name : id}`;
     });
     sumEl.innerHTML = '<strong>Your selection:</strong><br>' + lines.join('<br>');
     sumEl.style.display = 'block';
@@ -575,40 +665,29 @@ function refreshCheckoutState() {
 // ──────────────────────────────────────────────────────────
 // CHECKOUT
 // ──────────────────────────────────────────────────────────
-function doCheckout() {
-  const items    = getItems();
-  const log      = getLog();
+async function doCheckout() {
   const selected = Object.entries(qtys)
     .filter(([,q]) => q > 0)
     .map(([id, qty]) => {
-      const item = items.find(i => i.id === parseInt(id));
+      const item = cachedItems.find(i => i.id === parseInt(id));
       return { id: parseInt(id), name: item.name, qty };
     });
 
   if (!selected.length) return;
 
-  // deduct stock
-  selected.forEach(({ id, qty }) => {
-    const item = items.find(i => i.id === id);
-    item.avail = Math.max(0, item.avail - qty);
-  });
-  setItems(items);
+  showLoading('Saving checkout…');
+  try {
+    const result = await apiPost({ action: 'checkout', name: currentUser.name, phone: currentUser.phone, items: selected });
+    if (result.error) throw new Error(result.error);
 
-  // log entry
-  log.unshift({
-    id:        Date.now(),
-    name:      currentUser.name,
-    phone:     currentUser.phone,
-    timestamp: new Date().toISOString(),
-    items:     selected
-  });
-  setLog(log);
-
-  // success screen
-  const list = selected.map(i => `${i.qty}× ${i.name}`).join(', ');
-  document.getElementById('success-msg').textContent =
-    `${currentUser.name} checked out: ${list}`;
-  go('s-success');
+    hideLoading();
+    const list = selected.map(i => `${i.qty}× ${i.name}`).join(', ');
+    document.getElementById('success-msg').textContent = `${currentUser.name} checked out: ${list}`;
+    go('s-success');
+  } catch (e) {
+    hideLoading();
+    alert('Checkout failed: ' + e.message + '\nPlease try again or contact admin.');
+  }
 }
 
 function resetCheckin() {
@@ -623,7 +702,7 @@ function resetCheckin() {
 // ADMIN LOGIN
 // ──────────────────────────────────────────────────────────
 function openAdminLogin() {
-  document.getElementById('admin-pw').value       = '';
+  document.getElementById('admin-pw').value = '';
   document.getElementById('admin-pw-err').style.display = 'none';
   go('s-admin-login');
 }
@@ -645,20 +724,39 @@ function switchTab(el) {
   document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   const target = el.dataset.tab;
-  ['t-stock','t-log','t-qr','t-pw'].forEach(id => {
+  ['t-stock','t-log','t-qr','t-cfg'].forEach(id => {
     document.getElementById(id).style.display = (id === target) ? 'block' : 'none';
   });
+  if (target === 't-log') loadLog();
 }
 
 function loadAdmin() {
-  renderAdminStock();
-  renderAdminLog();
+  loadAdminStock();
+  document.getElementById('cfg-url').value = getScriptURL();
 }
 
 /* — Stock — */
+async function loadAdminStock() {
+  showLoading('Loading stock…');
+  try {
+    const data = await apiGet('getEquipment');
+    cachedItems = data.items || [];
+    hideLoading();
+    renderAdminStock();
+  } catch (e) {
+    hideLoading();
+    document.getElementById('admin-stock').innerHTML =
+      `<p style="color:var(--red);font-size:.85rem">⚠️ ${e.message}</p>`;
+  }
+}
+
 function renderAdminStock() {
-  const items = getItems();
-  document.getElementById('admin-stock').innerHTML = items.map(item => `
+  const el = document.getElementById('admin-stock');
+  if (!cachedItems.length) {
+    el.innerHTML = '<p style="color:var(--muted);font-size:.85rem">No items. Add one below.</p>';
+    return;
+  }
+  el.innerHTML = cachedItems.map(item => `
     <div class="stock-row">
       <div>
         <div style="font-weight:600;font-size:.9rem">${item.name}</div>
@@ -666,105 +764,98 @@ function renderAdminStock() {
       </div>
       <div style="display:flex;gap:8px;align-items:center">
         <label style="font-size:.72rem;color:var(--muted)">Avail:</label>
-        <input class="stock-input" type="number" id="sa-${item.id}"
-               value="${item.avail}" min="0">
+        <input class="stock-input" type="number" id="sa-${item.id}" value="${item.avail}" min="0">
         <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">✕</button>
       </div>
     </div>`).join('');
 }
 
-function saveStock() {
-  const items = getItems();
-  items.forEach(item => {
-    const el = document.getElementById(`sa-${item.id}`);
-    if (el) {
-      const v = parseInt(el.value);
-      if (!isNaN(v) && v >= 0) {
-        item.avail = v;
-        item.total = Math.max(item.total, v);
-      }
-    }
+async function saveStock() {
+  const updates = cachedItems.map(item => {
+    const el  = document.getElementById(`sa-${item.id}`);
+    const val = el ? parseInt(el.value) : item.avail;
+    const avail = isNaN(val) ? item.avail : Math.max(0, val);
+    return { id: item.id, avail, total: Math.max(item.total, avail) };
   });
-  setItems(items);
-  renderAdminStock();
-  alert('✅ Stock saved.');
+
+  showLoading('Saving stock…');
+  try {
+    await apiPost({ action: 'updateStock', items: updates });
+    hideLoading();
+    alert('✅ Stock saved.');
+    loadAdminStock();
+  } catch (e) {
+    hideLoading();
+    alert('Error: ' + e.message);
+  }
 }
 
-function deleteItem(id) {
+async function deleteItem(id) {
   if (!confirm('Delete this item?')) return;
-  setItems(getItems().filter(i => i.id !== id));
-  renderAdminStock();
+  showLoading('Deleting…');
+  try {
+    await apiPost({ action: 'deleteItem', id });
+    hideLoading();
+    loadAdminStock();
+  } catch (e) {
+    hideLoading();
+    alert('Error: ' + e.message);
+  }
 }
 
-function addItem() {
+async function addItem() {
   const name = document.getElementById('new-name').value.trim();
   const qty  = parseInt(document.getElementById('new-qty').value) || 0;
   if (!name) { alert('Please enter an item name.'); return; }
 
-  const items = getItems();
-  const newId = Math.max(0, ...items.map(i => i.id)) + 1;
-  items.push({ id: newId, name, total: qty, avail: qty });
-  setItems(items);
+  const newId = Math.max(0, ...cachedItems.map(i => i.id)) + 1;
+  const item  = { id: newId, name, total: qty, avail: qty };
 
-  document.getElementById('new-name').value = '';
-  document.getElementById('new-qty').value  = '';
-  renderAdminStock();
-  alert(`"${name}" added.`);
+  showLoading('Adding item…');
+  try {
+    await apiPost({ action: 'addItem', item });
+    hideLoading();
+    document.getElementById('new-name').value = '';
+    document.getElementById('new-qty').value  = '';
+    alert(`"${name}" added.`);
+    loadAdminStock();
+  } catch (e) {
+    hideLoading();
+    alert('Error: ' + e.message);
+  }
 }
 
 /* — Log — */
-function renderAdminLog() {
-  const log = getLog();
-  const el  = document.getElementById('admin-log');
+async function loadLog() {
+  document.getElementById('admin-log').innerHTML =
+    '<p style="color:var(--muted);font-size:.85rem">Loading…</p>';
+  showLoading('Loading log…');
+  try {
+    const data = await apiGet('getLog');
+    hideLoading();
+    renderLog(data.log || []);
+  } catch (e) {
+    hideLoading();
+    document.getElementById('admin-log').innerHTML =
+      `<p style="color:var(--red);font-size:.85rem">⚠️ ${e.message}</p>`;
+  }
+}
 
+function renderLog(log) {
+  const el = document.getElementById('admin-log');
   if (!log.length) {
     el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:24px 0;font-size:.84rem">No checkouts yet.</p>';
     return;
   }
-
   el.innerHTML = log.map(e => {
-    const d = new Date(e.timestamp);
-    const dateStr = d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
-    const timeStr = d.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
-    const items   = e.items.map(i => `${i.qty}× ${i.name}`).join(', ');
+    const items = Array.isArray(e.items) ? e.items.map(i => `${i.qty}× ${i.name}`).join(', ') : e.items;
     return `
       <div class="log-entry">
         <div class="log-who">${e.name} <span style="font-weight:400;color:var(--muted)">${e.phone}</span></div>
-        <div class="log-when">${dateStr} at ${timeStr}</div>
+        <div class="log-when">${e.timestamp}</div>
         <div class="log-items">${items}</div>
       </div>`;
   }).join('');
-}
-
-function clearLog() {
-  if (!confirm('Clear ALL log entries? This cannot be undone.')) return;
-  setLog([]);
-  renderAdminLog();
-}
-
-function exportCSV() {
-  const log = getLog();
-  if (!log.length) { alert('No log entries to export.'); return; }
-
-  const rows = [['Date','Time','Name','Phone','Items','Quantities']];
-  log.forEach(e => {
-    const d = new Date(e.timestamp);
-    rows.push([
-      d.toLocaleDateString('en-AU'),
-      d.toLocaleTimeString('en-AU'),
-      e.name,
-      e.phone,
-      e.items.map(i => i.name).join('; '),
-      e.items.map(i => i.qty).join('; ')
-    ]);
-  });
-
-  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
-  const blob = new Blob([csv], { type:'text/csv' });
-  const a    = document.createElement('a');
-  a.href     = URL.createObjectURL(blob);
-  a.download = `equipment-log-${new Date().toISOString().slice(0,10)}.csv`;
-  a.click();
 }
 
 /* — QR — */
@@ -774,7 +865,6 @@ function genQR() {
 
   const canvas = document.getElementById('qr-canvas');
   canvas.innerHTML = '';
-
   new QRCode(canvas, {
     text: url, width: 220, height: 220,
     colorDark: '#1e293b', colorLight: '#ffffff',
@@ -785,16 +875,16 @@ function genQR() {
   document.getElementById('qr-box').style.display = 'flex';
 }
 
-/* — Password — */
+/* — Settings — */
 function changePW() {
   const cur  = document.getElementById('pw-current').value;
   const nw   = document.getElementById('pw-new').value;
   const conf = document.getElementById('pw-confirm').value;
   const err  = document.getElementById('pw-err');
 
-  if (cur !== getAdminPW())   { showErr(err, 'Current password is incorrect.');      return; }
-  if (nw.length < 6)          { showErr(err, 'New password must be 6+ characters.');  return; }
-  if (nw !== conf)            { showErr(err, 'New passwords do not match.');           return; }
+  if (cur !== getAdminPW())  { showErr(err, 'Current password is incorrect.');     return; }
+  if (nw.length < 6)         { showErr(err, 'New password must be 6+ characters.'); return; }
+  if (nw !== conf)           { showErr(err, 'New passwords do not match.');          return; }
 
   setAdminPW(nw);
   err.style.display = 'none';
@@ -802,10 +892,20 @@ function changePW() {
   alert('✅ Password updated.');
 }
 
+function updateScriptURL() {
+  const url = document.getElementById('cfg-url').value.trim();
+  if (!url) { alert('Enter a URL.'); return; }
+  setScriptURL(url);
+  alert('✅ URL saved.');
+}
+
 // ──────────────────────────────────────────────────────────
-// INIT — pre-fill QR URL if hosted
+// INIT
 // ──────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
+  const url = getScriptURL();
+  go(url ? 's-checkin' : 's-setup');
+
   if (window.location.protocol !== 'file:') {
     document.getElementById('qr-url').value = window.location.href;
   }

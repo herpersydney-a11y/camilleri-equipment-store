@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Camilleri Civil – Equipment Store</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --orange:  #f97316;
+      --orange2: #ea580c;
+      --bg:      #f1f5f9;
+      --card:    #ffffff;
+      --text:    #1e293b;
+      --muted:   #64748b;
+      --border:  #e2e8f0;
+      --green:   #22c55e;
+      --red:     #ef4444;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── screens ── */
+    .screen { display: none; min-height: 100vh; }
+    .screen.active { display: block; }
+
+    /* ── header ── */
+    .hdr {
+      background: var(--orange);
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .hdr h1  { font-size: 1.05rem; font-weight: 700; }
+    .hdr sub { font-size: 0.72rem; opacity: .85; display: block; margin-top: 2px; }
+    .hdr-back {
+      background: rgba(255,255,255,.2);
+      border: none; color: #fff;
+      border-radius: 8px;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    /* ── layout ── */
+    .content { padding: 20px; max-width: 480px; margin: 0 auto; }
+
+    /* ── card ── */
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 4px rgba(0,0,0,.08);
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: .95rem;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    /* ── form ── */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .5px;
+      margin-bottom: 6px;
+    }
+    .field input {
+      width: 100%;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color .15s;
+    }
+    .field input:focus { border-color: var(--orange); }
+
+    /* ── buttons ── */
+    .btn {
+      display: block; width: 100%;
+      padding: 14px; border: none;
+      border-radius: 10px;
+      font-size: .95rem; font-weight: 700;
+      cursor: pointer; transition: opacity .15s;
+    }
+    .btn:disabled { opacity: .4; cursor: not-allowed; }
+    .btn-primary  { background: var(--orange); color: #fff; }
+    .btn-primary:not(:disabled):hover  { background: var(--orange2); }
+    .btn-secondary {
+      background: #fff; color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-danger { background: var(--red); color: #fff; }
+    .btn-sm { width: auto; display: inline-block; padding: 7px 14px; font-size: .8rem; }
+
+    /* ── error ── */
+    .err { color: var(--red); font-size: .82rem; margin-bottom: 10px; display: none; }
+
+    /* ── equipment rows ── */
+    .eq-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 13px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .eq-row:last-child { border-bottom: none; }
+    .eq-name  { font-weight: 600; font-size: .93rem; }
+    .eq-stock { font-size: .72rem; color: var(--muted); margin-top: 2px; }
+    .eq-stock.low  { color: var(--red);   font-weight: 600; }
+    .eq-stock.zero { color: #9ca3af; }
+
+    .qty-ctrl { display: flex; align-items: center; gap: 10px; }
+    .qty-btn {
+      width: 32px; height: 32px;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      background: #fff;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: border-color .1s, color .1s;
+    }
+    .qty-btn:hover { border-color: var(--orange); color: var(--orange); }
+    .qty-btn:disabled { opacity: .3; cursor: not-allowed; }
+    .qty-num { font-size: 1rem; font-weight: 700; min-width: 22px; text-align: center; }
+
+    /* ── summary box ── */
+    .summary-box {
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-size: .85rem;
+      color: #9a3412;
+      margin-bottom: 14px;
+      line-height: 1.7;
+    }
+
+    /* ── success ── */
+    .success-wrap { text-align: center; padding-top: 50px; }
+    .success-icon { font-size: 4rem; margin-bottom: 12px; }
+    .success-wrap h2 { font-size: 1.4rem; margin-bottom: 8px; }
+    .success-wrap p  { color: var(--muted); font-size: .88rem; margin-bottom: 28px; }
+
+    /* ── admin tabs ── */
+    .tabs { display: flex; gap: 8px; margin-bottom: 16px; overflow-x: auto; padding-bottom: 2px; }
+    .tab {
+      padding: 8px 16px; border-radius: 8px;
+      font-size: .82rem; font-weight: 600;
+      cursor: pointer; white-space: nowrap;
+      border: 1.5px solid var(--border);
+      background: #fff; color: var(--muted);
+    }
+    .tab.active { background: var(--orange); color: #fff; border-color: var(--orange); }
+
+    /* ── log entries ── */
+    .log-entry { padding: 11px 0; border-bottom: 1px solid var(--border); font-size: .83rem; }
+    .log-entry:last-child { border-bottom: none; }
+    .log-who  { font-weight: 700; }
+    .log-when { color: var(--muted); font-size: .72rem; margin-top: 1px; }
+    .log-items { color: var(--muted); margin-top: 3px; }
+
+    /* ── stock admin row ── */
+    .stock-row {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 11px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .stock-row:last-child { border-bottom: none; }
+    .stock-input {
+      width: 68px; border: 1.5px solid var(--border);
+      border-radius: 6px; padding: 6px 8px;
+      font-size: .9rem; text-align: center;
+      outline: none;
+    }
+    .stock-input:focus { border-color: var(--orange); }
+
+    /* ── QR wrapper ── */
+    .qr-box {
+      display: flex; flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      background: #fff;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      margin-top: 14px;
+    }
+    .qr-box p { font-size: .75rem; color: var(--muted); text-align: center; word-break: break-all; margin-top: 10px; }
+
+    /* ── info callout ── */
+    .info {
+      background: #eff6ff; border: 1px solid #bfdbfe;
+      border-radius: 8px; padding: 11px 14px;
+      font-size: .78rem; color: #1d4ed8; line-height: 1.55;
+      margin-bottom: 14px;
+    }
+
+    /* ── FAB (gear button) ── */
+    .fab {
+      position: fixed; bottom: 22px; right: 22px;
+      width: 46px; height: 46px;
+      background: var(--text); color: #fff;
+      border: none; border-radius: 50%;
+      font-size: 1.1rem; cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,.22);
+      z-index: 200;
+    }
+
+    /* ── divider ── */
+    .divider { height: 1px; background: var(--border); margin: 14px 0; }
+
+    @media print {
+      .fab, .btn, .hdr, .tabs { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════
+     SCREEN 1 — CHECK-IN
+     ════════════════════════════════════ -->
+<div id="s-checkin" class="screen active">
+  <div class="hdr">
+    <div>
+      <h1>Camilleri Civil</h1>
+      <sub>Equipment Store</sub>
+    </div>
+    <span style="font-size:1.6rem">🏗️</span>
+  </div>
+  <div class="content" style="padding-top:28px">
+    <div class="card">
+      <div class="card-title">Sign In to Check Out Equipment</div>
+      <p style="font-size:.84rem;color:var(--muted);margin-bottom:18px">Enter your details to continue.</p>
+
+      <div class="field">
+        <label>Full Name</label>
+        <input id="ci-name" type="text" placeholder="e.g. John Smith" autocomplete="name">
+      </div>
+      <div class="field">
+        <label>Mobile Number</label>
+        <input id="ci-phone" type="tel" placeholder="e.g. 0412 345 678" autocomplete="tel"
+               onkeydown="if(event.key==='Enter') doCheckin()">
+      </div>
+
+      <div id="ci-err" class="err"></div>
+      <button class="btn btn-primary" onclick="doCheckin()">Continue →</button>
+    </div>
+
+    <div class="info">
+      📋 Your name and mobile number are recorded with each checkout for site accountability.
+    </div>
+  </div>
+  <button class="fab" onclick="openAdminLogin()" title="Admin">⚙️</button>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 2 — EQUIPMENT SELECTION
+     ════════════════════════════════════ -->
+<div id="s-equip" class="screen">
+  <div class="hdr">
+    <div>
+      <h1>Select Equipment</h1>
+      <sub id="eq-user-label"></sub>
+    </div>
+    <button class="hdr-back" onclick="go('s-checkin')">← Back</button>
+  </div>
+  <div class="content" style="padding-top:20px">
+    <div class="card">
+      <div class="card-title">Storage Items</div>
+      <div id="eq-list"></div>
+    </div>
+
+    <div id="eq-summary" class="summary-box" style="display:none"></div>
+
+    <button class="btn btn-primary" id="eq-confirm-btn" onclick="doCheckout()" disabled>
+      Confirm Checkout
+    </button>
+    <p style="text-align:center;font-size:.73rem;color:var(--muted);margin-top:8px">
+      Select at least one item to continue.
+    </p>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 3 — SUCCESS
+     ════════════════════════════════════ -->
+<div id="s-success" class="screen">
+  <div class="hdr">
+    <div><h1>Checked Out</h1><sub>Camilleri Civil Equipment</sub></div>
+  </div>
+  <div class="content">
+    <div class="success-wrap">
+      <div class="success-icon">✅</div>
+      <h2>Done!</h2>
+      <p id="success-msg"></p>
+      <button class="btn btn-primary" onclick="resetCheckin()">Check Out Again</button>
+      <button class="btn btn-secondary" style="margin-top:10px" onclick="resetCheckin()">Done</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 4 — ADMIN LOGIN
+     ════════════════════════════════════ -->
+<div id="s-admin-login" class="screen">
+  <div class="hdr">
+    <div><h1>Admin Login</h1></div>
+    <button class="hdr-back" onclick="go('s-checkin')">← Back</button>
+  </div>
+  <div class="content" style="padding-top:40px">
+    <div class="card">
+      <div class="card-title">Enter Admin Password</div>
+      <div class="field">
+        <label>Password</label>
+        <input id="admin-pw" type="password" placeholder="Password"
+               onkeydown="if(event.key==='Enter') verifyAdmin()">
+      </div>
+      <div id="admin-pw-err" class="err">Incorrect password.</div>
+      <button class="btn btn-primary" onclick="verifyAdmin()">Login</button>
+    </div>
+    <p style="text-align:center;font-size:.73rem;color:var(--muted);margin-top:10px">
+      Default password: <strong>camilleri2024</strong>
+    </p>
+  </div>
+</div>
+
+
+<!-- ════════════════════════════════════
+     SCREEN 5 — ADMIN PANEL
+     ════════════════════════════════════ -->
+<div id="s-admin" class="screen">
+  <div class="hdr">
+    <div><h1>Admin Panel</h1><sub>Camilleri Civil Equipment</sub></div>
+    <button class="hdr-back" onclick="go('s-checkin')">← Exit</button>
+  </div>
+  <div class="content" style="padding-top:20px">
+
+    <div class="tabs">
+      <div class="tab active" data-tab="t-stock"   onclick="switchTab(this)">📦 Stock</div>
+      <div class="tab"        data-tab="t-log"     onclick="switchTab(this)">📋 Log</div>
+      <div class="tab"        data-tab="t-qr"      onclick="switchTab(this)">📱 QR Code</div>
+      <div class="tab"        data-tab="t-pw"      onclick="switchTab(this)">🔑 Password</div>
+    </div>
+
+    <!-- ── Stock tab ── -->
+    <div id="t-stock">
+      <div class="card">
+        <div class="card-title">Current Stock</div>
+        <div id="admin-stock"></div>
+        <button class="btn btn-primary" style="margin-top:16px" onclick="saveStock()">Save Stock Levels</button>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Add New Item</div>
+        <div class="field">
+          <label>Item Name</label>
+          <input id="new-name" type="text" placeholder="e.g. Safety Vests">
+        </div>
+        <div class="field">
+          <label>Initial Quantity</label>
+          <input id="new-qty" type="number" placeholder="0" min="0">
+        </div>
+        <button class="btn btn-primary" onclick="addItem()">Add Item</button>
+      </div>
+    </div>
+
+    <!-- ── Log tab ── -->
+    <div id="t-log" style="display:none">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <div class="card-title" style="margin-bottom:0">Checkout Log</div>
+          <button class="btn btn-secondary btn-sm" onclick="exportCSV()">Export CSV</button>
+        </div>
+        <div id="admin-log"></div>
+      </div>
+      <button class="btn btn-danger" onclick="clearLog()">Clear All Log Entries</button>
+    </div>
+
+    <!-- ── QR tab ── -->
+    <div id="t-qr" style="display:none">
+      <div class="card">
+        <div class="card-title">Generate QR Code</div>
+        <div class="info">
+          💡 Host this HTML file on <strong>GitHub Pages</strong>, <strong>Netlify</strong>, or any web server.
+          Paste the URL below to generate a printable QR code. Workers scan it to open this check-in
+          page directly on their phone.
+        </div>
+        <div class="field">
+          <label>Hosted Page URL</label>
+          <input id="qr-url" type="url" placeholder="https://yoursite.com/equipment-store.html">
+        </div>
+        <button class="btn btn-primary" onclick="genQR()">Generate QR Code</button>
+
+        <div id="qr-box" class="qr-box" style="display:none">
+          <strong style="font-size:.85rem">Scan to open Equipment Store</strong>
+          <div id="qr-canvas" style="margin:14px 0"></div>
+          <p id="qr-url-label"></p>
+          <button class="btn btn-secondary btn-sm" onclick="window.print()" style="margin-top:10px">🖨️ Print</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Password tab ── -->
+    <div id="t-pw" style="display:none">
+      <div class="card">
+        <div class="card-title">Change Admin Password</div>
+        <div class="field">
+          <label>Current Password</label>
+          <input id="pw-current" type="password" placeholder="Current password">
+        </div>
+        <div class="field">
+          <label>New Password</label>
+          <input id="pw-new" type="password" placeholder="New password">
+        </div>
+        <div class="field">
+          <label>Confirm New Password</label>
+          <input id="pw-confirm" type="password" placeholder="Confirm new password">
+        </div>
+        <div id="pw-err" class="err"></div>
+        <button class="btn btn-primary" onclick="changePW()">Update Password</button>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /s-admin -->
+
+
+<script>
+// ──────────────────────────────────────────────────────────
+// STORAGE HELPERS
+// ──────────────────────────────────────────────────────────
+const LS = {
+  get: (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch { return d; } },
+  set: (k, v) => localStorage.setItem(k, JSON.stringify(v))
+};
+
+const DEFAULT_ITEMS = [
+  { id:1, name:'Shovels',      total:10,  avail:10  },
+  { id:2, name:'Hammers',      total:10,  avail:10  },
+  { id:3, name:'Grease',       total:20,  avail:20  },
+  { id:4, name:'Paint',        total:20,  avail:20  },
+  { id:5, name:'Cement Bags',  total:50,  avail:50  },
+];
+
+const getItems  = ()    => LS.get('cc_items',  DEFAULT_ITEMS);
+const setItems  = (v)   => LS.set('cc_items',  v);
+const getLog    = ()    => LS.get('cc_log',    []);
+const setLog    = (v)   => LS.set('cc_log',    v);
+const getAdminPW = ()   => LS.get('cc_pw',     'camilleri2024');
+const setAdminPW = (v)  => LS.set('cc_pw',     v);
+
+// ──────────────────────────────────────────────────────────
+// STATE
+// ──────────────────────────────────────────────────────────
+let currentUser = null;  // { name, phone }
+let qtys = {};           // { itemId: qty }
+
+// ──────────────────────────────────────────────────────────
+// SCREEN ROUTING
+// ──────────────────────────────────────────────────────────
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// ──────────────────────────────────────────────────────────
+// CHECK-IN
+// ──────────────────────────────────────────────────────────
+function doCheckin() {
+  const name  = document.getElementById('ci-name').value.trim();
+  const phone = document.getElementById('ci-phone').value.trim();
+  const err   = document.getElementById('ci-err');
+
+  if (!name)            { showErr(err, 'Please enter your full name.');           return; }
+  if (phone.length < 8) { showErr(err, 'Please enter a valid mobile number.');    return; }
+
+  err.style.display = 'none';
+  currentUser = { name, phone };
+  qtys = {};
+
+  document.getElementById('eq-user-label').textContent = `${name}  ·  ${phone}`;
+  renderEquipList();
+  go('s-equip');
+}
+
+function showErr(el, msg) {
+  el.textContent = msg;
+  el.style.display = 'block';
+}
+
+// ──────────────────────────────────────────────────────────
+// EQUIPMENT LIST
+// ──────────────────────────────────────────────────────────
+function renderEquipList() {
+  const items = getItems();
+  document.getElementById('eq-list').innerHTML = items.map(item => {
+    const q     = qtys[item.id] || 0;
+    const empty = item.avail === 0;
+    const low   = item.avail > 0 && item.avail <= 3;
+    const stockClass = empty ? 'zero' : (low ? 'low' : '');
+    const stockLabel = empty
+      ? 'Out of stock'
+      : (low ? `⚠️ Only ${item.avail} left` : `${item.avail} available`);
+
+    return `
+      <div class="eq-row">
+        <div>
+          <div class="eq-name">${item.name}</div>
+          <div class="eq-stock ${stockClass}">${stockLabel}</div>
+        </div>
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="adj(${item.id},-1)" ${q===0?'disabled':''}>−</button>
+          <span class="qty-num" id="qn-${item.id}">${q}</span>
+          <button class="qty-btn" onclick="adj(${item.id},1)" ${empty||q>=item.avail?'disabled':''}>+</button>
+        </div>
+      </div>`;
+  }).join('');
+
+  refreshCheckoutState();
+}
+
+function adj(id, delta) {
+  const items = getItems();
+  const item  = items.find(i => i.id === id);
+  const cur   = qtys[id] || 0;
+  const next  = Math.min(item.avail, Math.max(0, cur + delta));
+
+  if (next === 0) delete qtys[id];
+  else qtys[id] = next;
+
+  document.getElementById(`qn-${id}`).textContent = next;
+  refreshCheckoutState();
+  renderEquipList(); // re-render to update disabled states
+}
+
+function refreshCheckoutState() {
+  const items   = getItems();
+  const entries = Object.entries(qtys).filter(([,q]) => q > 0);
+  const hasItems = entries.length > 0;
+
+  document.getElementById('eq-confirm-btn').disabled = !hasItems;
+
+  const sumEl = document.getElementById('eq-summary');
+  if (hasItems) {
+    const lines = entries.map(([id, q]) => {
+      const item = items.find(i => i.id === parseInt(id));
+      return `${q} × ${item.name}`;
+    });
+    sumEl.innerHTML = '<strong>Your selection:</strong><br>' + lines.join('<br>');
+    sumEl.style.display = 'block';
+  } else {
+    sumEl.style.display = 'none';
+  }
+}
+
+// ──────────────────────────────────────────────────────────
+// CHECKOUT
+// ──────────────────────────────────────────────────────────
+function doCheckout() {
+  const items    = getItems();
+  const log      = getLog();
+  const selected = Object.entries(qtys)
+    .filter(([,q]) => q > 0)
+    .map(([id, qty]) => {
+      const item = items.find(i => i.id === parseInt(id));
+      return { id: parseInt(id), name: item.name, qty };
+    });
+
+  if (!selected.length) return;
+
+  // deduct stock
+  selected.forEach(({ id, qty }) => {
+    const item = items.find(i => i.id === id);
+    item.avail = Math.max(0, item.avail - qty);
+  });
+  setItems(items);
+
+  // log entry
+  log.unshift({
+    id:        Date.now(),
+    name:      currentUser.name,
+    phone:     currentUser.phone,
+    timestamp: new Date().toISOString(),
+    items:     selected
+  });
+  setLog(log);
+
+  // success screen
+  const list = selected.map(i => `${i.qty}× ${i.name}`).join(', ');
+  document.getElementById('success-msg').textContent =
+    `${currentUser.name} checked out: ${list}`;
+  go('s-success');
+}
+
+function resetCheckin() {
+  document.getElementById('ci-name').value  = '';
+  document.getElementById('ci-phone').value = '';
+  currentUser = null;
+  qtys = {};
+  go('s-checkin');
+}
+
+// ──────────────────────────────────────────────────────────
+// ADMIN LOGIN
+// ──────────────────────────────────────────────────────────
+function openAdminLogin() {
+  document.getElementById('admin-pw').value       = '';
+  document.getElementById('admin-pw-err').style.display = 'none';
+  go('s-admin-login');
+}
+
+function verifyAdmin() {
+  const pw = document.getElementById('admin-pw').value;
+  if (pw === getAdminPW()) {
+    loadAdmin();
+    go('s-admin');
+  } else {
+    document.getElementById('admin-pw-err').style.display = 'block';
+  }
+}
+
+// ──────────────────────────────────────────────────────────
+// ADMIN PANEL
+// ──────────────────────────────────────────────────────────
+function switchTab(el) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  const target = el.dataset.tab;
+  ['t-stock','t-log','t-qr','t-pw'].forEach(id => {
+    document.getElementById(id).style.display = (id === target) ? 'block' : 'none';
+  });
+}
+
+function loadAdmin() {
+  renderAdminStock();
+  renderAdminLog();
+}
+
+/* — Stock — */
+function renderAdminStock() {
+  const items = getItems();
+  document.getElementById('admin-stock').innerHTML = items.map(item => `
+    <div class="stock-row">
+      <div>
+        <div style="font-weight:600;font-size:.9rem">${item.name}</div>
+        <div style="font-size:.72rem;color:var(--muted)">Total: ${item.total}</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <label style="font-size:.72rem;color:var(--muted)">Avail:</label>
+        <input class="stock-input" type="number" id="sa-${item.id}"
+               value="${item.avail}" min="0">
+        <button class="btn btn-danger btn-sm" onclick="deleteItem(${item.id})">✕</button>
+      </div>
+    </div>`).join('');
+}
+
+function saveStock() {
+  const items = getItems();
+  items.forEach(item => {
+    const el = document.getElementById(`sa-${item.id}`);
+    if (el) {
+      const v = parseInt(el.value);
+      if (!isNaN(v) && v >= 0) {
+        item.avail = v;
+        item.total = Math.max(item.total, v);
+      }
+    }
+  });
+  setItems(items);
+  renderAdminStock();
+  alert('✅ Stock saved.');
+}
+
+function deleteItem(id) {
+  if (!confirm('Delete this item?')) return;
+  setItems(getItems().filter(i => i.id !== id));
+  renderAdminStock();
+}
+
+function addItem() {
+  const name = document.getElementById('new-name').value.trim();
+  const qty  = parseInt(document.getElementById('new-qty').value) || 0;
+  if (!name) { alert('Please enter an item name.'); return; }
+
+  const items = getItems();
+  const newId = Math.max(0, ...items.map(i => i.id)) + 1;
+  items.push({ id: newId, name, total: qty, avail: qty });
+  setItems(items);
+
+  document.getElementById('new-name').value = '';
+  document.getElementById('new-qty').value  = '';
+  renderAdminStock();
+  alert(`"${name}" added.`);
+}
+
+/* — Log — */
+function renderAdminLog() {
+  const log = getLog();
+  const el  = document.getElementById('admin-log');
+
+  if (!log.length) {
+    el.innerHTML = '<p style="text-align:center;color:var(--muted);padding:24px 0;font-size:.84rem">No checkouts yet.</p>';
+    return;
+  }
+
+  el.innerHTML = log.map(e => {
+    const d = new Date(e.timestamp);
+    const dateStr = d.toLocaleDateString('en-AU', { day:'numeric', month:'short', year:'numeric' });
+    const timeStr = d.toLocaleTimeString('en-AU', { hour:'2-digit', minute:'2-digit' });
+    const items   = e.items.map(i => `${i.qty}× ${i.name}`).join(', ');
+    return `
+      <div class="log-entry">
+        <div class="log-who">${e.name} <span style="font-weight:400;color:var(--muted)">${e.phone}</span></div>
+        <div class="log-when">${dateStr} at ${timeStr}</div>
+        <div class="log-items">${items}</div>
+      </div>`;
+  }).join('');
+}
+
+function clearLog() {
+  if (!confirm('Clear ALL log entries? This cannot be undone.')) return;
+  setLog([]);
+  renderAdminLog();
+}
+
+function exportCSV() {
+  const log = getLog();
+  if (!log.length) { alert('No log entries to export.'); return; }
+
+  const rows = [['Date','Time','Name','Phone','Items','Quantities']];
+  log.forEach(e => {
+    const d = new Date(e.timestamp);
+    rows.push([
+      d.toLocaleDateString('en-AU'),
+      d.toLocaleTimeString('en-AU'),
+      e.name,
+      e.phone,
+      e.items.map(i => i.name).join('; '),
+      e.items.map(i => i.qty).join('; ')
+    ]);
+  });
+
+  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type:'text/csv' });
+  const a    = document.createElement('a');
+  a.href     = URL.createObjectURL(blob);
+  a.download = `equipment-log-${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+
+/* — QR — */
+function genQR() {
+  const url = document.getElementById('qr-url').value.trim();
+  if (!url) { alert('Please enter the hosted URL.'); return; }
+
+  const canvas = document.getElementById('qr-canvas');
+  canvas.innerHTML = '';
+
+  new QRCode(canvas, {
+    text: url, width: 220, height: 220,
+    colorDark: '#1e293b', colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById('qr-url-label').textContent = url;
+  document.getElementById('qr-box').style.display = 'flex';
+}
+
+/* — Password — */
+function changePW() {
+  const cur  = document.getElementById('pw-current').value;
+  const nw   = document.getElementById('pw-new').value;
+  const conf = document.getElementById('pw-confirm').value;
+  const err  = document.getElementById('pw-err');
+
+  if (cur !== getAdminPW())   { showErr(err, 'Current password is incorrect.');      return; }
+  if (nw.length < 6)          { showErr(err, 'New password must be 6+ characters.');  return; }
+  if (nw !== conf)            { showErr(err, 'New passwords do not match.');           return; }
+
+  setAdminPW(nw);
+  err.style.display = 'none';
+  ['pw-current','pw-new','pw-confirm'].forEach(id => document.getElementById(id).value = '');
+  alert('✅ Password updated.');
+}
+
+// ──────────────────────────────────────────────────────────
+// INIT — pre-fill QR URL if hosted
+// ──────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  if (window.location.protocol !== 'file:') {
+    document.getElementById('qr-url').value = window.location.href;
+  }
+});
+</script>
+</body>
+</html>

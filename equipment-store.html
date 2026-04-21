@@ -480,7 +480,8 @@ const LS = {
   set: (k, v) => localStorage.setItem(k, JSON.stringify(v)),
 };
 
-const getScriptURL  = ()  => LS.get('cc_script_url', '');
+const HARDCODED_URL = 'https://script.google.com/macros/s/AKfycbwk8VfooxIYlC0qGj16K3FMsvcFQ5FkgcMFCCbgXQ5A6307VmSFdLXHB0mTjXsPyMGC/exec';
+const getScriptURL  = ()  => LS.get('cc_script_url', '') || HARDCODED_URL;
 const setScriptURL  = (v) => LS.set('cc_script_url', v);
 const getAdminPW    = ()  => LS.get('cc_pw', 'camilleri2024');
 const setAdminPW    = (v) => LS.set('cc_pw', v);

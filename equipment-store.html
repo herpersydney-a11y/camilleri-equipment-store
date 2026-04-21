@@ -904,8 +904,7 @@ function updateScriptURL() {
 // INIT
 // ──────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
-  const url = getScriptURL();
-  go(url ? 's-checkin' : 's-setup');
+  go('s-checkin');
 
   if (window.location.protocol !== 'file:') {
     document.getElementById('qr-url').value = window.location.href;
